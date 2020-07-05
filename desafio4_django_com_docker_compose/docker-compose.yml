@@ -1,0 +1,42 @@
+version: '3'
+#build: . - fazer o build com o Dockerfile
+#volumes - vou compartilhar td minha aplicacao p a pasta app
+#tty - serve p habilitar o bash do banco de dados
+#cria-se um volume externo p persistir os dados q vao sendo
+#armazenados na minha aplicacao, q , msm q stop o container, o 
+#volume n serah perdido. 
+#->cmd "docker volume create desafio-django-pgdata"
+services: 
+  app:
+    build: .
+    container_name: desafio-django-app
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes: 
+     - .:/home/django/app
+    ports: 
+     - "8000:8000"
+#    depends_on: 
+#     - db  
+#  db:
+#    image: postgres
+#    container_name: desafio-django-db
+#    tty: true
+#    environment: 
+#      - POSTGRES_DB=desafio_django
+#      - POSTGRES_USER=postgres
+#      - POSTGRES_PASSWORD=root
+#    volumes: 
+#      - desafio-django-pgdata:/var/lib/postgresql/data
+#  
+#  pgadmin:
+#    image: dpage/pgadmin4
+#    container_name: iniciando-django-pgadmin
+#    tty: true
+#    environment: 
+#      - PGADMIN_DEFAULT_EMAIL=admin@user.com
+#      - PGADMIN_DEFAULT_PASSWORD=123456
+#    ports: 
+#      - "9000:80"
+#volumes: 
+#  desafio-django-pgdata:
+#    external: true

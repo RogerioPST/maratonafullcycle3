@@ -1,0 +1,108 @@
+cria a pasta com underscore 'iniciando_com_django'
+criar o arquivo Dockerfile
+criar o arquivo docker-compose.yml
+criar o volume externo 'docker volume create <nome>'
+executar o comando "docker-compose run app django-admin startproject desafio4_oficial_django ."
+-> o cmd acima chama o container app e rodando o cmd 'django-admin' la dentro
+->vai criar a pasta desafio4_oficial_django dentro da pasta desafio4_oficial_django
+->na verdade, o django chama de app/modulos cada pasta criada.
+subir td c 'docker-compose up'
+
+configurar a conexao com o banco de dados no arquivo settings.py em DATABASES
+apos configurar, subir de novo com 'docker-compose up'
+
+acessar o bash do meu container app: 'docker-compose exec app bash'
+-> somente consigo fazer isso, pq o container app foi criado no 'docker-compose.yml', vide print:
+"
+rogerio@LAPTOP-8SQOBVQT:~/ti/desafios-maratona-fullcycle3/desafio4_oficial_django$ docker-compose exec app bash
+django@f65ab642b92d:~/app$ cd ~
+django@f65ab642b92d:~$ ls
+app
+django@f65ab642b92d:~$ cd app/
+django@f65ab642b92d:~/app$ cd ..
+django@f65ab642b92d:~$ cd ..
+django@f65ab642b92d:/home$ pwd
+/home
+django@f65ab642b92d:/home$ cd django
+django@f65ab642b92d:~$ pwd
+/home/django
+django@f65ab642b92d:~$ cd app/
+django@f65ab642b92d:~/app$ ls
+Dockerfile  desafio4_oficial_django  leia-me.txt  requirements.txt
+db.sqlite3  docker-compose.yml       manage.py
+django@f65ab642b92d:~/app$ 
+"
+
+-> estando o container app startado, consigo rodar o comando 
+"python manage.py"
+-> p instalar o banco de dados, rodar "python manage.py migrate"
+-> p criar um novo modulo(chamado app) na aplicacao, entrar na pasta do container 
+app e rodar o cmd 'django-admin startapp app'
+-> apos criars os models em models.py, rodar o cmd
+'python manage.py makemigrations'
+vai retornar 'no changes detected'
+-> qdo se cria um modulo, precisa ir em 'installed_apps' em settings.py
+e adicionar la apos a ultima linha o nome do modulo, no caso 'app'
+->apos isso, rodar de nv o cmd 'python manage.py makemigrations'
+->vai criar a primeira migracao na pasta migrations (n precisa
+ficar querendo entender o arquivo)
+-> rodar de nv o cmd 'python manage.py migrate' p aih sim gerar as 
+tabelas, no caso 'app_aula'
+-> p acessar o shell interativo do python no container app, 
+rodar o cmd 'python manage.py shell'
+-> p criar registro nessa tabela Aula, fazer:
+cmd:'python manage.py shell'
+cmd:'from app.models import Aula'
+cmd:'from datetime import datetime'
+cmd:'Aula.objects.create(title='aula teste', image_url='teste', video_url='teste', live_date=datetime.now())'
+-> p selecionar todas aulas criadas:
+cmd:'Aula.objects.all()'
+-> p selecionar uma aula c id 1:
+cmd:'Aula.objects.get(1)'
+
+-> no django, o Controller = View
+e View = Template
+
+-> criar o arquivo.views.py c conteudo semelhante ao abaixo:
+'
+from django.shortcuts import render
+
+#view eh o controller no django
+# Create your views here.
+from app.models import Aula
+
+def aula_list(request):
+	aulas = Aula.objects.all()
+	return render(
+		request,
+		'aula_list.html',
+		{
+			'aulas': aulas
+		}
+	)
+	'
+
+-> criar a pasta 'templates' dentro de 'app', pois cada modulo fica
+e carrega suas tabelas consigo.
+-> criar o arquivo 'aula_list.html' dentro de templates.
+
+-> criar o arquivo urls.py p habilitar as rotas da aplicação c 
+conteudo semelhante ao abaixo:
+'
+from django.urls import path
+from app.views import aula_list
+
+urlpatterns = [
+	path('aula_list/', aula_list)
+]
+'
+->no arquivo urls.py da aplicacao root, colocar o path p a rota:
+'
+from django.contrib import admin
+from django.urls import path, include
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+		path('', include('app.urls'))
+]
+'

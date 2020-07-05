@@ -1,0 +1,40 @@
+FROM python:3
+#estou criando um usuario django no container app (p n usar o root e ter menos 
+#dificuldades) p ser usado com esse nome django 
+#/bin/bash - permissao p executar comandos no /bin/bash do container app
+#a opcao -m eh p criar ali no /home/django
+#a opcao -s estou falando q qdo acessar o terminal, vai ser c mesmo nome
+RUN useradd -ms /bin/bash django
+
+#qualquer comando q executar, vai ser c usuario django. deixo o
+#user root de lado
+USER django
+
+#sem essa variavel de ambiente, n se consegue ver as coisas do python 
+#no terminal 
+ENV PYTHONNUNBUFFERED 1
+
+#diretorio do meu usuario e a aplicação vai ficar dentro de app
+WORKDIR /home/django/app
+
+#como n se vai instalar as coisas do python como root no 
+#container app, mas sim com o usuario django, preciso
+#atualizar a variavel de ambiente PATH no container app c td q 
+#ja tem la + /home/django/.local/bin
+#p usar cmd 'python', 'django'
+#td no python fica dentro da pasta .local/bin
+#se fosse usar o root, n teria o trecho "/home/django/.local/bin"
+#se eu n atualizar o path, qdo for tentar executar um comando no
+#terminal c python ou django, n vou conseguir.
+ENV PATH $PATH:/home/django/.local/bin
+
+#o requirements.txt equivale ao package.json do node
+#posso colocar "/home/django/app" ou .(ponto) - tanto faz
+COPY requirements.txt /home/django/app
+
+#psycopg2==2.8.5 eh p trabalhar c postgres
+RUN pip install -r requirements.txt
+
+#vou copiar td minha aplicacao q esta nessa pasta onde esta o Dockerfile
+#para a pasta /home/django/app
+COPY . /home/django/app

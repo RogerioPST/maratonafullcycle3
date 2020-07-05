@@ -1,0 +1,45 @@
+{% extends 'maratona/base.html' %}
+{% load static %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block content %}
+
+    <div class="page-classes-details">
+        <section class="classes">
+
+            <div class="container">
+                <h1>Aula</h1>
+                <div class="row">
+                    <article class="content">
+                        <div class="col-12 col-xl-11">
+                            <div class="title-content">
+                                <span>{{ aula.live_date|date:"d/m" }}</span>
+                                <h2>{{ aula.title }}</h2>
+                            </div>
+
+                            <div class="article-content">
+                                <div class="container-title"></div>
+
+                                <div class="container-content">
+                                    <div class="content-type">
+                                        <div class="embed-responsive embed-responsive-16by9">
+                                            <iframe src="{{ aula.video_url }}?rel=0&amp;showinfo=0&amp;autoplay=0"
+                                                    width="100%" height="100%" frameborder="0"
+                                                    allow="autoplay; encrypted-media"
+                                                    allowfullscreen="">
+                                            </iframe>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+
+        </section>
+    </div>
+{% endblock %}

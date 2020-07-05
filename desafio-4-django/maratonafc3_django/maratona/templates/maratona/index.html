@@ -1,0 +1,60 @@
+{% extends 'maratona/base.html' %}
+{% load static %}
+
+{% block head %}
+{% endblock %}
+
+{% block content %}
+    {% now "Y-m-d" as todays_date %}
+
+    <div class="page-classes-index">
+        <section class="classes">
+
+            <div class="container">
+                <h1>Aulas</h1>
+
+                <div class="row">
+                    {% if latest_aulas_list %}
+                        {% for aula in latest_aulas_list %}
+
+                            <article class="col-12 col-lg-6">
+                                {% if aula.video_url %}
+                                    <a href="{% url 'maratona:detail' aula.id %}" class="box activate">
+                                {% else %}
+                                    <a class="box disabled">
+                                {% endif %}
+                                    <div class="content">
+                                        <img src="{{ aula.image_url }}"
+                                             alt="{{ aula.title }}" class="img-fluid">
+
+                                        <div class="content-title">
+                                            <h2>{{ aula.title }}</h2>
+                                            <div class="info">
+                                                <p>
+                                                    <span class="icon-m-play2"></span>
+                                                    Assistir
+                                                </p>
+                                                <p>
+                                                    <span class="icon-m-fullcycle"></span>
+                                                    {{ aula.live_date|date:"d/m" }}
+
+                                                    {% if aula.video_url %}
+                                                       <span class="in-ar">No ar</span>
+                                                    {% endif %}
+
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </article>
+                        {% endfor %}
+                    {% else %}
+                        <p>Nenhuma aula disponível.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+        </section>
+    </div>
+{% endblock %}
